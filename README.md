@@ -1,127 +1,127 @@
-Aquí tienes un README con un tono más relajado, pero explicando todo en detalle y usando tus imágenes.
+
+# Simulador de Zoo Interactivo: Proyecto de Herencia y Arquitectura MVVM
+
+Este repositorio documenta un proyecto de aplicación de consola que simula la interacción con entidades de un zoológico.
+
+El objetivo principal del proyecto es demostrar la aplicación práctica de conceptos fundamentales de la Programación Orientada a Objetos (POO), específicamente la **Herencia**, así como la implementación de la arquitectura de software **MVVM (Modelo-Vista-VistaModelo)**.
+
+Adicionalmente, el proyecto integra persistencia de datos en la nube mediante **Firebase Realtime Database**.
+
+## Funcionalidad de la Aplicación
+
+A continuación, se presenta el flujo de operación de la aplicación.
+
+### 1\. Interfaz de Usuario Dinámica
+
+Al iniciar, la aplicación presenta una interfaz de usuario en la consola. El menú principal se genera dinámicamente utilizando los datos actuales de los animales (ej. `PERRY`, `KIRA`, `DUMBO`).
+
+\<img width="428" height="503" alt="Menú principal de la aplicación" src="[https://github.com/user-attachments/assets/2224da1e-36a8-4658-a2ab-86793ef93dd3](https://github.com/user-attachments/assets/2224da1e-36a8-4658-a2ab-86793ef93dd3)" /\>
+
+### 2\. Ejecución de Acciones Específicas
+
+El usuario puede seleccionar una acción del menú, y el sistema invocará el método correspondiente al objeto del animal. Cada entidad posee sus propios comportamientos únicos.
+
+Respuesta del método `usar_trompa()` del Elefante:
+\<img width="1163" height="100" alt="Respuesta del elefante" src="[https://github.com/user-attachments/assets/465401d8-3e72-4956-a209-6a3b66a42d9d](https://github.com/user-attachments/assets/465401d8-3e72-4956-a209-6a3b66a42d9d)" /\>
+
+Respuesta del método `veneno_defensa()` del Ornitorrinco:
+\<img width="973" height="103" alt="Respuesta de defensa del ornitorrinco" src="[https://github.com/user-attachments/assets/d7c38bed-350c-4a36-96c8-95b9e92710a3](https://github.com/user-attachments/assets/d7c38bed-350c-4a36-96c8-95b9e92710a3)" /\>
+
+### 3\. Lógica de Negocio Basada en Estado
+
+El comportamiento de la aplicación depende del estado interno de los objetos. Por ejemplo, si el objeto "Perry" tiene el atributo `genero="macho"`, la invocación del método "Revisar nido" (`poner_huevos()`) retornará la respuesta lógica apropiada.
+
+\<img width="637" height="97" alt="Respuesta de ornitorrinco macho" src="[https://github.com/user-attachments/assets/babaa09c-8c96-4347-9131-10969d7e9b67](https://github.com/user-attachments/assets/babaa09c-8c96-4347-9131-10969d7e9b67)" /\>
+
+### 4\. Actualización de Datos y Validación de Entrada
+
+El sistema permite la modificación de datos en tiempo de ejecución. Se ha implementado lógica de validación (bucles `while` y condicionales `if`) para asegurar la integridad de los datos. La entrada "mujer" es rechazada, solicitando al usuario que ingrese un valor válido ("macho" o "hembra") antes de continuar.
+
+### 5\. Dinamismo y Coherencia de Estado
+
+Tras una actualización exitosa, el estado de la aplicación se refresca:
+
+1.  El menú principal ahora refleja el nuevo nombre del objeto ("MIGUEL").
+2.  La lógica de negocio se ajusta al nuevo estado. Dado que el objeto ahora es "hembra", el método "Revisar nido" produce un resultado diferente y coherente.
+
+\<img width="496" height="147" alt="El menú y la lógica se actualizan" src="[https://github.com/user-attachments/assets/90eeab75-6517-4f87-be50-dc502869c16e](https://github.com/user-attachments/assets/90eeab75-6517-4f87-be50-dc502869c16e)" /\>
+
+### 6\. Persistencia de Datos en Firebase
+
+Al seleccionar la opción "Salir", el estado final de todos los objetos se serializa y se envía a Firebase Realtime Database. Esto asegura que los datos (incluyendo las modificaciones, como el cambio a "miguel") se persistan entre sesiones.
+
+\<img width="1876" height="1008" alt="Consola de Firebase con datos" src="[https://github.com/user-attachments/assets/974ac776-ac39-415b-9b6d-878d4aff083e](https://github.com/user-attachments/assets/974ac776-ac39-415b-9b6d-878d4aff083e)" /\>
 
 -----
 
-# 🐾 Simulador de Zoo Interactivo 🐾
+## Arquitectura del Sistema
 
-¡Hola\! Este es un proyecto de consola que te permite "jugar" con los animales de un zoológico.
+El proyecto evita una estructura monolítica y adopta un diseño modular basado en la **Separación de Responsabilidades**.
 
-Lo especial de este proyecto no es solo lo que hace, sino *cómo está construido por dentro*. Es un ejemplo perfecto para aprender a organizar un programa de Python de forma limpia y profesional, usando **Herencia** (Programación Orientada a Objetos) y una arquitectura llamada **MVVM**.
+\<img width="692" height="556" alt="Estructura de archivos del proyecto" src="[https://github.com/user-attachments/assets/8c352635-b017-41e7-a6db-ef66f3cebbaa](https://github.com/user-attachments/assets/8c352635-b017-41e7-a6db-ef66f3cebbaa)" /\>
 
-Ah, y todo lo que haces se guarda en la nube usando **Firebase**.
+El proyecto implementa la arquitectura **MVVM (Modelo-Vista-VistaModelo)**:
 
-## 📸 ¿Qué hace el programa?
+### 1\. `model/` (El Modelo)
 
-Aquí tienes un vistazo de cómo funciona, paso a paso.
+Contiene la lógica de negocio y la capa de acceso a datos. Es el "cerebro" de la aplicación.
 
-### 1\. El Menú de Bienvenida
+  * **`domain.py`**: Define las clases de entidad (`Animales`, `Ornitorrinco`, `Canguro`, `Elefante`), sus atributos y sus métodos (comportamientos).
+  * **`data.py`**: Contiene el servicio de acceso a datos (`FirebaseRealtimeService`). Es el único componente responsable de la comunicación con la base de datos externa.
 
-Cuando inicias el programa, te recibe un menú. Fíjate que es "inteligente": te muestra los nombres reales de los animales (`PERRY`, `KIRA` y `DUMBO`).
+### 2\. `UI/` (La Vista)
 
-### 2\. Dando Órdenes a los Animales
+Responsable de la presentación al usuario. Es la "cara" de la aplicación.
 
-Puedes elegir una acción del menú y el animal responderá. Cada uno tiene sus propias habilidades únicas.
+  * **`interfaz.py`**: Contiene la clase `Interfaz`. Su única función es mostrar información en la consola (`print`) y recibir entradas del usuario (`input`). No contiene ninguna lógica de negocio.
 
-Aquí le pedimos al elefante Dumbo que use su trompa:
+### 3\. `view_model/` (El Vista-Modelo)
 
-Y aquí vemos la defensa especial de Perry, el ornitorrinco:
+Actúa como el intermediario (o *pegamento*) entre la Vista y el Modelo.
 
-### 3\. La Lógica Importa
+  * **`view.py`**: Contiene la clase `Animales_View_model`. Cuando la `Interfaz` (Vista) notifica una acción del usuario (ej. "Opción 3 seleccionada"), el `VistaModelo` invoca los métodos apropiados del `Modelo` (ej. `orni.poner_huevos()`). Posteriormente, toma el resultado devuelto por el Modelo y lo formatea para que la Vista lo muestre.
 
-El programa sabe *quién* es cada animal. Perry es "macho", así que si intentas "Revisar nido", te dirá correctamente que no puede poner huevos.
-
-### 4\. Actualizando un Animal (con Validación)
-
-¡Vamos a cambiar a Perry\!
-
-1.  Elegimos la opción 10 para actualizarlo.
-2.  Le queremos poner el nombre "miguel" y género "hembra".
-3.  ¡Ups\! Escribimos "mujer". El programa se da cuenta, nos da un error y nos vuelve a preguntar hasta que escribimos "hembra" correctamente.
-
-### 5\. ¡El Programa "Recuerda" el Cambio\!
-
-¡Mira qué genial\!
-
-1.  El menú principal ahora dice "Acciones de MIGUEL".
-2.  Como "miguel" ahora es "hembra", si elegimos la opción 3 ("Revisar nido")... ¡ahora sí funciona\!
-
-### 6\. Guardado en la Nube
-
-Cuando terminas y eliges "Salir", el programa guarda todo en tu base de datos de Firebase. Si vas a la consola de Firebase, verás que "miguel" (hembra, furioso, etc.) está guardado perfectamente.
+Este patrón de diseño incrementa la modularidad, facilita las pruebas y mejora la mantenibilidad del código.
 
 -----
 
-## 🏗️ ¿Cómo está organizado por dentro? (La Arquitectura)
+## Configuración y Ejecución
 
-En lugar de poner todo en un solo archivo, separamos el código en carpetas. Esta es la clave de un proyecto limpio.
+### 1\. Configuración de Credenciales
 
-Imagina que esto es un restaurante:
+Para la conexión con Firebase, se requieren dos archivos en el directorio raíz del proyecto (`herencia.ejercicio`):
 
-### 1\. `model/` (La Cocina 👨‍🍳)
+1.  **Archivo de credenciales JSON:** El archivo de clave privada descargado desde la consola de Firebase (ej. `herencia-animal-firebase-adminsdk...json`).
+2.  **Archivo de entorno (.env):** Un archivo que contiene las variables de entorno para la aplicación.
 
-Esta carpeta es el "cerebro". No habla con el usuario, solo cocina.
-
-  * **`domain.py`**: Son las recetas. Aquí viven las clases `Animales`, `Mamiferos`, `Ornitorrinco`... Define *qué es* un ornitorrinco y *qué puede hacer* (como `poner_huevos()` o `veneno_defensa()`).
-  * **`data.py`**: Es el almacén y el repartidor. Aquí vive la clase `FirebaseRealtimeService`. Es la única que sabe cómo conectarse a Firebase para "guardar" y "pedir" ingredientes.
-
-### 2\. `UI/` (El Cliente 👋)
-
-Esta es la "cara" del programa, la parte que ve el usuario.
-
-  * **`interfaz.py`**: Es el cliente en la mesa. Su único trabajo es **mostrar cosas** (`print`) y **pedir cosas** (`input`). No sabe *cómo* cocina el chef, solo pide "Quiero la opción 3".
-
-### 3\. `view_model/` (El Mesero 🗣️)
-
-Este es el pegamento que une todo.
-
-  * **`view.py`**: Es el mesero (`Animales_View_model`). Es el intermediario perfecto.
-    1.  Escucha al Cliente (`UI`): "¡Quiero la opción 3\!"
-    2.  Va a la Cocina (`model`): "¡Chef, prepare un `poner_huevos_orni()`\!"
-    3.  Toma el plato terminado (el resultado) y se lo lleva al Cliente para que lo vea.
-
-Este método (MVVM) es increíble porque el Cocinero, el Mesero y el Cliente no necesitan saber los detalles del trabajo del otro, solo cómo comunicarse.
-
------
-
-## 🚀 ¿Cómo lo ejecuto? (Guía Rápida)
-
-### 1\. Las Llaves (Configuración)
-
-Necesitas dos cosas en la carpeta raíz (`herencia.ejercicio`):
-
-1.  **Tu archivo de llave JSON:** Es el archivo que descargaste de Firebase (el que se llama `herencia-animal-firebase-adminsdk...json`).
-2.  **Un archivo `.env`:** Crea un archivo nuevo con este nombre y ponle este texto:
-
-<!-- end list -->
+Contenido del archivo `.env`:
 
 ```.env
-# Asegúrate de que este nombre sea EXACTO al de tu archivo JSON
+# Asegúrese de que este nombre coincida con su archivo JSON
 FIREBASE_CREDENTIALS_JSON="herencia-animal-firebase-adminsdk-fbsvc-....json"
 
-# La URL de tu Realtime Database
+# La URL de su Realtime Database
 FIREBASE_DB_URL="https://herencia-animal-default-rtdb.firebaseio.com/"
 ```
 
-### 2\. Las Herramientas (Instalación)
+### 2\. Instalación de Dependencias
 
-Abre tu terminal y escribe esto para instalar las librerías que usa el proyecto:
+El proyecto requiere las bibliotecas `firebase-admin` y `python-dotenv`. Se instalan mediante `pip`:
 
 ```bash
 pip install firebase-admin python-dotenv
 ```
 
-### 3\. ¡Encenderlo\! (La forma correcta de ejecutarlo)
+### 3\. Ejecución del Módulo
 
-**¡Importante\!** No puedes simplemente hacer clic en `main.py` o ejecutarlo directamente.
+**Importante:** Debido a la estructura modular del proyecto, los scripts no pueden ejecutarse directamente.
 
-**❌ INCORRECTO:**
-Si ejecutas `python app/main.py` te dará este error, porque no encontrará las otras carpetas (como `model`).
+  * **Ejecución Incorrecta:** Invocar `python app/main.py` resultará en un `ModuleNotFoundError`, ya que el intérprete no podrá resolver las rutas de importación (ej. `from model.domain...`).
 
-**✅ CORRECTO:**
-Párate en la carpeta raíz (`herencia.ejercicio`) y usa el comando `-m` (que significa "módulo"). Esto le dice a Python que mire en todas las carpetas.
+  * **Ejecución Correcta:** El programa debe ejecutarse como un **módulo** desde el directorio raíz (`herencia.ejercicio`) utilizando el indicador `-m`. Esto asegura que el directorio raíz se añada al `PYTHONPATH`, permitiendo que todas las importaciones relativas se resuelvan correctamente.
+
+<!-- end list -->
 
 ```bash
 python -m app.main
 ```
-
-¡Y listo\! Con eso, el programa se iniciará, te mostrará el menú y podrás empezar a interactuar.
